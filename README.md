@@ -1,3 +1,3 @@
 # my-code
-code in github
+code in github.
 just a test!
