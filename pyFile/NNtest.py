@@ -80,7 +80,7 @@ def build_model(X,y,nn_hdim,num_passes=20000,print_loss=False):
         b2+=-epsilon*db2
         model={'W1':W1,'b1':b1,'W2':W2,'b2':b2}
         if print_loss and i%1000==0:
-            print "loss after iteration %i:%f" %(i,calculate_loss(model,X,y))
+            print("loss after iteration %i:%f" %(i,calculate_loss(model,X,y)))
     return model
 def main():
     X,y=generate_data()
