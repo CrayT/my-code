@@ -5,7 +5,13 @@ import pandas as pd
 from sklearn.model_selection import train_test_split,cross_val_score
 import os
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+'''
+先运行代码，模型会保存在mymodels文件夹；
+然后运行tensorboard --logdir=mymodels路径，即可访问tensorboard页面。
+'''
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'#不然提示CPU问题。
+
 names=['alloy','class','delta','Hmix','Smix','Fi','RMS','VEC','r','Sc','deltaHmixmax','deltaHmixmin','rootHmix','rootHmix0','rootHmix0plus','rootHmix0neg']
 data=pd.read_csv('/home/xutao/Downloads/Python/HEA-data/合并数据集-去除重复.csv',header=0,names=names)
 y=data[["class"]]
@@ -22,15 +28,13 @@ x_train,x_test,y_train,y_test=train_test_split(X,Y,test_size=0.2, random_state=3
 my_feature_columns = []
 for key in names[2:]:
     my_feature_columns.append(tf.feature_column.numeric_column(key=key))
-# print(my_feature_columns)
 
-# feature=names[2:]
 dir_path='/home/xutao/Downloads/Python/'
 tf.logging.set_verbosity(tf.logging.INFO)
 models_path=os.path.join(dir_path,'mymodels/')
 
 classfier=tf.estimator.DNNClassifier(
-    model_dir=models_path,
+    model_dir=models_path, #保存模型，便于tensorboard可视化。
     feature_columns=my_feature_columns,
     hidden_units=[100,100,100],
     n_classes=5
