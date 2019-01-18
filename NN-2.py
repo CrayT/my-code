@@ -23,11 +23,13 @@ for item in range(Y.shape[0]):
     Y.iloc[item,0]=Y.iloc[item,0]-1
     # print(Y.iloc[item,0])
 
-x_train,x_test,y_train,y_test=train_test_split(X,Y,test_size=0.2, random_state=33)
+x_train,x_test,y_train,y_test=train_test_split(X,Y,test_size=0.3, random_state=33)
 
 my_feature_columns = []
+#定义特征列,每个 tf.feature_column 都标识了特征名称、特征类型和任何输入预处理操作。
 for key in names[2:]:
     my_feature_columns.append(tf.feature_column.numeric_column(key=key))
+
 
 dir_path='/home/xutao/Downloads/Python/'
 tf.logging.set_verbosity(tf.logging.INFO)
@@ -40,15 +42,21 @@ classfier=tf.estimator.DNNClassifier(
     n_classes=5
 )
 
-def train_func(train_x,train_y):
+def input_train(train_x,train_y): #训练集导入函数
     dataset=tf.data.Dataset.from_tensor_slices((dict(train_x), train_y))
-    dataset = dataset.shuffle(5000).repeat().batch(100)
+    dataset = dataset.shuffle(100).repeat().batch(50)
+    '''
+    shuffle,数字越大，打乱数据的程度越大；
+    batch，按照顺序取出指定数字的数据，最后一次可能小于batch；
+    repeat，数据集重复了指定次数，
+    '''
     return dataset
+print(input_train(x_train,y_train))
 
 classfier.train(
-    input_fn=lambda:train_func(x_train,y_train),steps=1000)
+    input_fn=lambda:input_train(x_train,y_train),steps=500) #训练steps步停止
 
-def eval_input_fn(features, labels, batch_size):
+def eval_input_fn(features, labels, batch_size): #测试集导入函数
     features=dict(features)
     if labels is None:
         # No labels, use only features.
@@ -61,13 +69,21 @@ def eval_input_fn(features, labels, batch_size):
     dataset = dataset.batch(batch_size)
     return dataset
 
+#评估模型：
+eval_result=classfier.evaluate(
+    input_fn=lambda:eval_input_fn(x_test,labels=y_test,batch_size=100)
+)
+print("\neval_result:%s"%(eval_result))
+print("\nTest set accuracy: {accuracy:0.3f} \n".format(**eval_result))
+
+#模型预测：
 predict_arr = []
 predictions = classfier.predict(
         input_fn=lambda:eval_input_fn(x_test,labels=y_test,batch_size=100))
 
 for predict in predictions:
-
-    predict_arr.append(np.argmax(predict['probabilities']))
+    #从prediction中得到概率最大的索引作为预测最终类别：
+    predict_arr.append(np.argmax(predict['probabilities'])) 
 
 result = predict_arr == y_test
 result=result.values #Dataframe转数组
