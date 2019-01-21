@@ -145,8 +145,37 @@ def echo(bot, update):
         new_file.download('tmp.jpg')
         itchat.send_image('tmp.jpg', target)
         subprocess.Popen("rm ./{}".format("tmp.jpg"), shell=True)
-    
 
+def find(bot, update):
+    print("hello")
+    print(itchat.get_friends())
+    name = update.message.text.split(maxsplit=1)[-1]
+    print(name)
+    flag = False
+    for ifriend in itchat.get_friends():
+        
+        print(ifriend)
+        print(ifriend.UserName)
+        name_l=[]
+        name_l.append(ifriend.UserName)
+        name_l.append(ifriend.NickName)
+        name_l.append(ifriend.RemarkName)
+        print(name_l)
+        for item in name_l:
+            if name in str(item):
+                #friend = itchat.search_friends(name=ifriend.UserName)[0]
+                mess = "[{name}](http://google.com?user={url})".format(name=name_l[1],url=name_l[0])
+                print(mess)
+                bot_instance.send_message(CHAT_ID, mess, parse_mode="Markdown")
+                return 
+
+        #         flag = True
+        #         break
+        #     else:
+        #         pass
+        # if flag:
+        #     break
+    
 def get_weather():
     resp=urlopen('http://www.weather.com.cn/weather1d/101020300.shtml')
     soup=BeautifulSoup(resp,'html.parser')
@@ -171,10 +200,13 @@ _thread.start_new_thread( sch, (1,))
 dis = update_instance.dispatcher
 sub_handler = CommandHandler("sub", sub)
 toggle_handler = CommandHandler("t", toggle)
+find_handler = CommandHandler("f", find)
 message_handler = MessageHandler(Filters.text | Filters.photo, echo)
+dis.add_handler(find_handler)
 dis.add_handler(sub_handler)
 dis.add_handler(toggle_handler)
 dis.add_handler(message_handler)
+
 update_instance.start_polling()
 itchat.auto_login(hotReload=True)
  
