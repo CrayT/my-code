@@ -23,22 +23,24 @@ class MyFrame(Frame):
     "hkbucket-vr":"http://oss-cn-hongkong.aliyuncs.com"
     }
     def __init__(self):
-        Frame.__init__(self,None,-1, title="复制", pos=(300,300),size=(600,350))
+        Frame.__init__(self,None,-1, title="DataCopy", pos=(300,300),size=(600,350))
         panel = Panel(self,-1)
         self.button1 = Button(panel, -1,"开始拷贝", pos=(420, 25), size=(100,30))
         self.button1.Bind(EVT_BUTTON, self.OnReady)
 
-        StaticText(panel, -1, "2021-06", pos=(520,260))
+        StaticText(panel, -1, "V1.0", pos=(520,260))
 
-        StaticText(panel, -1, "请输入IDs:", pos = (30,30))
+        StaticText(panel, -1, "请输入ID:", pos = (30,30))
         text_input1 = TextCtrl(panel, -1, style=TE_MULTILINE, pos = (90,25), size = (300,60))
         text_input1.SetEditable(True)
         self.__TextBox1 = text_input1
 
-        StaticText(panel, -1, "Bucket:", pos = (30,100))
-        text_input2 = TextCtrl(panel, -1,  pos = (90,95), size = (100,30))
-        
+        StaticText(panel, -1, "当前Bucket:", pos = (30,100))
+        text_input2 = TextCtrl(panel, -1,  pos = (100,95), size = (100,30))
         self.__TextBox2 = text_input2
+
+        StaticText(panel, -1, "拷贝进度:", pos=(210, 100))
+        self.__progress = StaticText(panel, -1, "0.0%", pos=(270, 100))
 
         text_output = TextCtrl(panel, -1,style=TE_MULTILINE , pos = (40,130), size = (450,150))
         self.__TextOutBox = text_output
@@ -79,10 +81,21 @@ class MyFrame(Frame):
 
         prefix = hid + '/'
         abPath = os.getcwd()
+        fileCount = 0
+        for obj in oss2.ObjectIterator(Bucket, prefix = prefix):
+            if obj.key[-1] == '/' or obj.key[-1] == '\\':
+                continue
+            fileCount += 1
+        print('文件数量：', fileCount)
+
+        currCopy = 0
         for obj in oss2.ObjectIterator(Bucket, prefix = prefix):
             subPath = obj.key
-            print('file: ', subPath)
+            if subPath[-1] == '/' or subPath[-1] == '\\':
+                continue
+            #print('file: ', subPath)
             subPath.replace("/", "\\")
+            
             subPath = os.path.dirname(subPath)
             subPath.replace("/", "\\")
             self.__TextOutBox.AppendText(obj.key +"\n")
@@ -97,6 +110,9 @@ class MyFrame(Frame):
 
             TestBucket.put_object_from_file(obj.key, './' + obj.key)
             os.remove('./' + obj.key)
+            currCopy += 1
+            progress = str(format(((currCopy / fileCount) * 100), '.1f')) + "%"
+            self.__progress.SetLabel(progress)
 
         shutil.rmtree(abPath + "/" + hid)
         dial=MessageDialog(None,"拷贝完成")
@@ -108,30 +124,17 @@ class MyFrame(Frame):
         if not bucket or not hid:
             dial=MessageDialog(None,"请输入有效数据")
             dial.ShowModal()
-        print(hid)
         hids = hid.split('\n')
         print(hids)
         #for id in hids:
-            
         self.OnFire(hids[0], bucket)
     def OnFire(self, hid, bucket):
         token = self.GetToken(bucket)
         sts = self.GetSts(token, bucket)
         threadJob = threading.Thread(target = self.CopyData, args = (hid, bucket, sts, token))
         threadJob.start()
+        # threadJob.join()
 
-    def Start(self, event):
-        bucket = self.__TextBox2.GetValue()
-        hid = self.__TextBox1.GetValue()
-        if not bucket or not hid:
-            dial=MessageDialog(None,"请输入有效数据")
-            dial.ShowModal()
-
-        token = self.GetToken(bucket)
-        sts = self.GetSts(token, bucket)
-        threadJob = threading.Thread(target = self.CopyData, args = (hid, bucket, sts, token))
-        threadJob.start()
-        #self.CopyData(hid, bucket, sts, token)
     def InitUi(self):
 
         pass
