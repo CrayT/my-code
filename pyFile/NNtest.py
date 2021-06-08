@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn import datasets,linear_model
 import matplotlib.pyplot as plt
+import pandas as pd
 np.random.seed(0)
 def generate_data():
     np.random.seed(0)
@@ -83,7 +84,11 @@ def build_model(X,y,nn_hdim,num_passes=20000,print_loss=False):
             print("loss after iteration %i:%f" %(i,calculate_loss(model,X,y)))
     return model
 def main():
-    X,y=generate_data()
+    names=['alloy','class','delta','Hmix','Smix','Fi','RMS','VEC','r','Sc','deltaHmixmax','deltaHmixmin','rootHmix','rootHmix0','rootHmix0+','rootHmix0-']
+    data=pd.read_csv('/home/xutao/Downloads/Python/HEA-data/合并数据集-去除重复.csv',header=0,names=names)
+    y=data[["class"]]
+    X=pd.read_csv('/home/xutao/Downloads/Python/HEA-data/generate_feature_1120.csv')
+    # X,y=generate_data()
     model=build_model(X,y,50,print_loss=True)
     visualize(X,y,model)
 if __name__=="__main__":

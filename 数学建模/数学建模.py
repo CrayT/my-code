@@ -1,191 +1,320 @@
-#coding:UTF8
 
+# coding: utf-8
+
+# In[72]:
+
+
+import sympy
+import copy
+import copy
 import numpy as np
-import matplotlib
-import xlrd
-#matplotlib.use('agg')
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-#ax=plt.subplot(111,projection='3d')
-fig = plt.figure()
-ax = Axes3D(fig)
+line=[[60600,69982,7995],[61197,69928,7980],[61790,69838,7955],[62377,69713,7920],
+      [62955,69553,7875],[63523,69359,7820],[64078,69131,7755],[64618,68870,7680],
+      [65141,68577,7595],[65646,68253,7500],[66131,67900,7395],[66594,67518,7280],
+      [67026,67116,7155],[67426,66697,7020],[67796,66263,6875],[68134,65817,6720],
+      [68442,65361,6555],[68719,64897,6380],[68966,64429,6195],[69184,63957,6000]]
+radars=[[80000,0,0],[130000,60000,0],[30000,60000,0],[55000,110000,0],[105000,110000,0]]
+def Drone(t):
+    result=[]
+    for i in radars:
+        ratio=[t[0]-i[0],t[1]-i[1],t[2]-i[2]]
+        result.append(ratio)
+    return result
+vectors=[]
+for i in line:
+    vectors.append(Drone(i))
+# print(vectors)
 
-#分别对应三个雷达与航迹点连线延长线的边界点坐标
-cor_radar1=[(40169.7113854679, 143680.580300113, 16414.5957460404),
-(41284.2764248533, 143983.040906390, 16430.9670866176),
-(42381.2870211500, 144273.238715921, 16433.6552304641),
-(43458.4067043510, 144551.103297939, 16422.2560802099),
-(44510.6880608023, 144815.964406396, 16396.4993558922),
-(45537.4152499492, 145068.302219990, 16355.9757689748),
-(46533.2991568161, 145307.530209154, 16300.3557994530),
-(47495.2886322736, 145533.706403284, 16229.1108636158),
-(48420.1243640607, 145746.896257205, 16141.6754461914),
-(49306.3781051657, 145947.594760215, 16037.4922816816),
-(50150.8166985386, 146135.954010327, 15915.6904257197),
-(50949.1208461911, 146311.894577568, 15775.8018976376),
-(51685.6427409413, 146473.439324725, 15615.0166632160),
-(52358.3459560847, 146621.234274457, 15432.1943206844),
-(52971.0212628113, 146756.900857288, 15226.5018697290),
-(53519.2498609578, 146880.459455700, 14996.6830384598),
-(54006.6949493538, 146993.287023299, 14741.8337607705),
-(54430.4944253486, 147095.488279244, 14460.9028956898),
-(54792.8361866262, 147187.996858062, 14152.4723422014),
-(55094.4195282731, 147271.284229867, 13815.9654983692)]
 
-cor_radar2=[(-17516.1370835505, 81217.6668640922, 16994.1140631554),
-(-17493.7323649766, 81282.7605615960, 17106.8119743690),
-(-17484.4251967233, 81271.8336766656, 17200.3900079158),
-(-17488.4214785378, 81184.4348494009, 17273.8313607799),
-(-17506.1850322552, 81017.6237693062, 17325.8439425611),
-(-17537.6027462012, 80771.1603126148, 17355.5373057643),
-(-17582.8641596428, 80442.0244021980, 17361.5046806534),
-(-17641.6236318807, 80029.6901534793, 17342.5051159775),
-(-17713.3662377570, 79533.7199497563, 17297.2604661769),
-(-17797.3320964436, 78954.0880410223, 17224.7255916233),
-(-17892.3713987622, 78292.9078903728, 17123.5511201654),
-(-17997.7201737658, 77547.9743283975, 16992.4518636251),
-(-18110.4700010575, 76736.3372904298, 16828.0625791210),
-(-18228.8433156344, 75864.2337661777, 16629.3745018019),
-(-18351.1267415150, 74936.7099669171, 16396.2767080560),
-(-18475.5902507598, 73960.5358110864, 16127.6947998110),
-(-18600.5705048237, 72941.4155508035, 15823.7229874122),
-(-18724.5994959412, 71884.6683920240, 15483.8032144401),
-(-18845.8398400264, 70801.1636899347, 15107.9722418482),
-(-18963.3278613659, 69692.3159751944, 14696.4609176565)]
+# In[73]:
 
-cor_radar3=[(-5438.18888076141, 10461.3639047227, 19886.3360383263),
-(-4688.20182595080, 9654.68977993516, 19982.9201326641),
-(-3884.76753143621, 8795.87980565746, 20045.7839785368),
-(-3030.62519453692, 7890.11103835232, 20073.7290087683),
-(-2128.87211951901, 6942.76392869104, 20065.1651311978),
-(-1181.78075755416, 5958.39256050923, 20019.3245780571),
-(-193.266315065225, 4942.97441399734, 19934.8462996269),
-(832.307803298249, 3902.79877048331, 19811.0018342497),
-(1890.15154478248, 2844.29482524711, 19647.2389928843),
-(2976.44988510620, 1772.70044604179, 19443.4269924710),
-(4084.40644132933, 695.760404949052, 19199.6401854015),
-(5209.39668104701, -381.305269899515, 18915.6796376081),
-(6324.70905859259, -1433.90679758033, 18592.2396030381),
-(7422.35588729318, -2455.54700091934, 18230.5600061532),
-(8500.19501913375, -3445.11263434435, 17832.3878949429),
-(9548.98278115122, -4395.71132697868, 17398.9810587171),
-(10567.0099134012, -5307.02567087050, 16932.2241374707),
-(11548.2021187042, -6175.31048868786, 16433.4629829020),
-(12487.3694334484, -6997.64354632633, 15904.8605861072),
-(13384.6096745830, -7775.50303644114, 15347.6753951447)]
-dim_x=[60600,61197,61790,62377,62955,63523,64078,64618,65141,65646,66131,66594,67026,67426,67796,68134,68442,68719,68966,69184]
-dim_y=[69982,69928,69838,69713,69553,69359,69131,68870,68577,68253,67900,67518,67116,66697,66263,65817,65361,64897,64429,63957]
-dim_z=[7995,7980,7955,7920,7875,7820,7755,7680,7595,7500,7395,7280,7155,7020,6875,6720,6555,6380,6195,6000]
 
-for i in range(len(dim_x)):
-    ax.scatter(dim_x[i],dim_y[i],dim_z[i])
-    ax.plot([dim_x[i],80000],[dim_y[i],0],[dim_z[i],0],c='g')
-    ax.plot([dim_x[i],30000],[dim_y[i],60000],[dim_z[i],0],c='r')
-    ax.plot([dim_x[i],55000],[dim_y[i],110000],[dim_z[i],0],c='b')
-    ax.plot([dim_x[i],105000],[dim_y[i],110000],[dim_z[i],0],c='y')
-    ax.plot([dim_x[i],130000],[dim_y[i],60000],[dim_z[i],0],c='c')
-x=np.arange(0,130000,100)
-y=np.arange(0,130000,100)
-x,y=np.meshgrid(x,y)
-z=x*y*0+2000
-z2=x*y*0+2500
-
-#2000和2500水平面
-ax.plot_surface(x,y,z,rstride=100,cstride=100,alpha=0.5)
-ax.plot_surface(x,y,z2,rstride=100,cstride=100,alpha=0.5)
-
-ax.scatter(80000,0,0,c='b')
-ax.scatter(30000,60000,0,c='b')
-ax.scatter(55000,110000,0,c='b')
-ax.scatter(105000,110000,0,c='b')
-ax.scatter(130000,60000,0,c='b')
-
-demo=[[[75146.96685428392, 17506.44152595372, 2000], [75549.74747474748, 17604.29292929293, 2000]], 
-    [[74904.31519699813, 18381.76360225141, 2100], [75327.23484848485, 18484.507575757576, 2100]], [[74816.21553884711, 19278.39598997494, 2200], [75238.22222222222, 19430.679365079366, 2200]], 
-    [[74735.00942803269, 20192.005028284097, 2300], [75153.82352941176, 20399.70588235294, 2300]], [[74659.69696969698, 21125.151515151516, 2400], 
-    [75072.49516441007, 21394.50676982592, 2400]], [[74109.33583959899, 21907.268170426065, 2500], [74588.88888888889, 22080.31746031746, 2500]], 
-    [[37818.796992481206, 62488.22055137844, 2000], [38369.52380952381, 62426.15873015873, 2000]], [[38037.5234521576, 62621.91369606004, 2100], 
-    [38392.08045254557, 62597.08359522313, 2100]], [[38791.70333123821, 62720.754242614705, 2200], [39431.023017902815, 62632.96675191816, 2200]], 
-    [[39859.70588235294, 62752.64705882353, 2300], [40367.369791666664, 62656.380208333336, 2300]], [[40546.382978723406, 62825.841392649905, 2400], 
-    [41104.46346280447, 62710.30941408822, 2400]], [[41268.880208333336, 62887.369791666664, 2500], [41882.0, 62751.0, 2500]], [[57670.44107965767, 99092.03423304806, 2000], 
-    [58010.4124408384, 98613.92832995267, 2000]], [[57980.88, 98310.84, 2100], [58344.42307692308, 97745.57692307692, 2100]], [[58311.45368492224, 97475.32116294793, 2200], 
-    [58697.72187281621, 96814.14395527603, 2200]], [[57692.37911025145, 97878.95551257253, 2300], [58071.00724160632, 97455.83936800527, 2300]], [[58005.625, 97146.875, 2400],
- [58406.72, 96640.95999999999, 2400]], [[59425.21367521367, 94578.70370370371, 2500], [59653.09090909091, 94095.63636363637, 2500]], [[94177.01818181819, 97276.5090909091, 2000],
-  [94027.97619047618, 96850.29761904762, 2000]], [[93479.375, 96192.8125, 2100], [93288.05491990846, 95699.176201373, 2100]], [[92730.34324942791, 95018.18459191457, 2200],
-   [92489.3103448276, 94447.24137931035, 2200]], [[91920.64263322884, 93740.29780564264, 2300], [91621.7594834544, 93080.98466505247, 2300]], 
-   [[91040.09685230024, 92345.37530266344, 2400], [90673.6, 91582.8, 2400]], [[91731.65618448638, 95016.07267645003, 2500], [91618.94586894587, 94578.70370370371, 2500]], 
-   [[112172.64957264958, 61907.97720797721, 2000], [111904.29090909091, 61821.96363636364, 2000]], [[110666.875, 61817.8125, 2100], [110278.90160183067, 61717.4828375286, 2100]], 
-   [[108868.62068965517, 61688.620689655174, 2200], [108325.29459241324, 61572.849071832126, 2200]], [[109967.88461538462, 62375.192307692305, 2300], 
-   [109756.78546470999, 62287.46331236897, 2300]], [[109271.72413793104, 62563.89452332657, 2400], [109096.92307692308, 62478.46153846154, 2400]]]
-
-cor=[[(39568.48030018761, 63121.325828642905, 2500), (39898.10039685738, 63050.59414150717, 2500), (40227.72049352715, 62979.86245437144, 2500), (40557.340590196916,   000), (59583.183989776284, 96050.66127246652, 2000)]]
-
-#第二问产生的合理路线：
-from math1 import get_list,get_list2,get_list3,get_list4
-cor2=get_list()
-print(len(cor2))
-
-#以下代码是为了将坐标写入excel一行中，便于向附件中填充。
-from xlrd import open_workbook
-import  xlwt
-Excel_file = xlwt.Workbook() 
-sheet = Excel_file.add_sheet('sheet0')
-j=0
-iii=cor2[4]
-for i in range(len(iii)):
-    if len(iii[i])>=20:
-        print(len(iii[i]))
-        for item1 in iii[i]:
-            print('%.1f'%item1[0],',','%.1f'%item1[1],',','%.1f'%item1[2])
-            # x='%.1f'%item1[0]
-            # y='%.1f'%item1[1]
-            # z='%.1f'%item1[2]
-            # sheet.write(0,j,x)
-            # j+=1   
-            # sheet.write(0,j,y)
-            # j+=1
-            # sheet.write(0,j,z)
-            # j+=1         
-        # for j in range(len(item[i])):
-        #     if j <len(item[i])-1:
-        #         ax.plot([item[i][j][0],item[i][j+1][0]],[item[i][j][1],item[i][j+1][1]],[item[i][j][2],item[i][j+1][2]])
-        #     else:
-        #         ax.plot([item[i][j][0],item[i][-1][0]],[item[i][j][1],item[i][-1][1]],[item[i][j][2],item[i][-1][2]])
+##r代表雷达序号，v代表组号
+def sofun(r1,r2,r3,v1,v2,v3):
+    ax,ay,az,bx,by,bz,cx,cy,cz,dx,dy,dz = sympy.symbols("ax,ay,az,bx,by,bz,cx,cy,cz,dx,dy,dz")
+    eq1 = (ax-radars[r1][0])/vectors[v1][r1][0]-(az-radars[r1][2])/vectors[v1][r1][2]
+    eq2 = (ay-radars[r1][1])/vectors[v1][r1][1]-(az-radars[r1][2])/vectors[v1][r1][2]
+    eq3 = (bx-radars[r2][0])/vectors[v2][r2][0]-(bz-radars[r2][2])/vectors[v2][r2][2]
+    eq4 = (by-radars[r2][1])/vectors[v2][r2][1]-(bz-radars[r2][2])/vectors[v2][r2][2]
+    eq5 = (cx-radars[r3][0])/vectors[v3][r3][0]-(cz-radars[r3][2])/vectors[v3][r3][2]
+    eq6 = (cy-radars[r3][1])/vectors[v3][r3][1]-(cz-radars[r3][2])/vectors[v3][r3][2]
+    eq7 = (ax-bx)/(ax-cx)-(az-bz)/(az-cz)
+    eq8 = (ay-by)/(ay-cy)-(az-bz)/(az-cz)
+    eq9 = (ax-bx)/(v2-v1)-(bx-cx)/(v3-v2)
+    eq10 = (ay-by)/(v2-v1)-(by-cy)/(v3-v2)
+    eq11 = (az-bz)/(v2-v1)-(bz-cz)/(v3-v2)
+    eqs=[eq1,eq2,eq3,eq4,eq5,eq6,eq7,eq8,eq9,eq10,eq11]
+    re = sympy.solve(eqs, [ax,ay,az,bx,by,bz,cx,cy,cz],check=False,rational=True)
+#     if re and re[0][2]>=2000 and re[0][5]>=2000 and re[0][8]>=2000 and re[0][2]<=2500 and re[0][5]<=2500 and re[0][8]<=2500:
+    if re:
+        res=[]
+        for i in re:
+            print(toFloat(list(i)))
+            try:
+                if i[2]>=2000 and i[5]>=2000 and i[8]>=2000 and i[2]<=2500 and i[5]<=2500 and i[8]<=2500:
+                    res.append(list[i])
+            except:
+                pass
+        if res:
+            res.append([v1,v2,v3])
+            print(res)
+        return res
     else:
-        pass
-#Excel_file.save('/home/xutao/Downloads/Python/output.xlsx')
+        return []
 
-#[105000,110000,0]，cor_radar3
-for item in cor_radar3:
-    #print(item,item[0],item[1],item[2])
-    ax.plot([item[0],80000],[item[1],0],[item[2],0],c='y')
-    ax.plot([item[0],30000],[item[1],60000],[item[2],0],c='y')
+def toFloat(a):
+    for i in range(len(a)):
+        a[i]=float(a[i])
+    return a
+re=sofun(0,1,2,0,1,2)
+print(re)
 
 
-for item in cor_radar2:
-    #print(item,item[0],item[1],item[2])
-    ax.plot([item[0],55000],[item[1],110000],[item[2],0],c='c')
-    ax.plot([item[0],80000],[item[1],0],[item[2],0],c='c')
+# In[ ]:
 
-for item in cor_radar1:
-    #print(item,item[0],item[1],item[2])
-    ax.plot([item[0],55000],[item[1],110000],[item[2],0],c='g')
-    ax.plot([item[0],130000],[item[1],60000],[item[2],0],c='g')
 
-for i in range(len(dim_x)):
-    ax.scatter(cor_radar1[i][0],cor_radar1[i][1],cor_radar1[i][2])
-    ax.scatter(cor_radar2[i][0],cor_radar2[i][1],cor_radar2[i][2])
-    ax.scatter(cor_radar3[i][0],cor_radar3[i][1],cor_radar3[i][2])
-    #ax.plot([cor_radar1[i][0],80000],[cor_radar1[i][1],0],[cor_radar1[i][2],0],c='g')
-    ax.plot([dim_x[i],cor_radar1[i][0]],[dim_y[i],cor_radar1[i][1]],[dim_z[i],cor_radar1[i][2]],c='g')
-    ax.plot([dim_x[i],cor_radar2[i][0]],[dim_y[i],cor_radar2[i][1]],[dim_z[i],cor_radar2[i][2]],c='c')
-    ax.plot([dim_x[i],cor_radar3[i][0]],[dim_y[i],cor_radar3[i][1]],[dim_z[i],cor_radar3[i][2]],c='y')
-    # ax.plot([dim_x[i],30000],[dim_y[i],60000],[dim_z[i],0],c='r')
-    # ax.plot([dim_x[i],55000],[dim_y[i],110000],[dim_z[i],0],c='b')
-    # ax.plot([dim_x[i],105000],[dim_y[i],110000],[dim_z[i],0],c='y')
-    # ax.plot([dim_x[i],130000],[dim_y[i],60000],[dim_z[i],0],c='c')
+results=[]
+zz=0
+for i in range(1):
+    for j in range(i+1,2):
+        for k in range(j+1,3):
+            for l in range(5):
+                for m in range(5):
+                    for n in range(5):
+                        re=sofun(l,m,n,i,j,k)
+                        if zz%1000==0:
+                            print(zz)
+                        zz+=1
+                        if re:
+                            print(zz,':',re)
+                            if len(re)>2:
+                                print(re)
+                            results.append(re)
 
-ax.set_xlabel('axis X')
-ax.set_ylabel('axis Y')
-ax.set_zlabel('axis Z')
-plt.show()
+
+# In[74]:
+
+
+def sodis(r,h):
+    points=[]
+    for i in line:
+        x=(i[0]-r[0])*h/i[2]+r[0]
+        y=(i[1]-r[1])*h/i[2]+r[1]
+        points.append([x,y])
+    return points
+def dist(a,b):
+    return ((a[0]-b[0])**2+(a[1]-b[1])**2)**0.5
+paths=[]
+points_all=[]
+for r in radars:
+    for h in [2000,2100,2200,2300,2400,2500]:
+        points=sodis(r,h)
+        points_all.append(points)
+        path=[]
+        for i in range(20):
+            for j in range(i+1,20):
+                tem=dist(points[i],points[j])
+                tem=tem/(j-i)
+#                 if j==19 and tem<=500:
+#                     print(tem,h,r)
+                if tem>=1000/3 and tem<=500:
+                    path.append([i,j])
+        paths.append(path)
+
+
+# In[80]:
+
+
+demo=np.zeros(20).tolist()
+result=[]
+def test(de,a):
+    if de[a[0]]<3 and de[a[1]]<3:
+        return True
+    else:
+        return False
+def check_de(de,maxi,result):
+    tem=sum(de)
+    if tem>maxi[0]:
+        maxi[0]=tem
+        print(maxi[0])
+        print(de)
+        print(result)
+    if tem==60:
+        return True
+    else:
+        return False
+def recur(maxi,de,result,num):
+#     if sum(de)>52:
+#         print(de)
+#     if de[0]>0:
+#         print(de)
+    de=copy.deepcopy(de)
+    result=copy.deepcopy(result)
+    if check_de(de,maxi,result):
+        return result
+    for i in paths[num]: 
+        if test(de,i):
+            de[i[0]]+=1
+            de[i[1]]+=1
+            result.append(i)
+            tem = recur(maxi,de,result,num+1)
+            if tem:
+                return tem
+            else:
+                de[i[0]]-=1
+                de[i[1]]-=1
+                result.pop()
+    return False
+maxi=[0]
+re=recur(maxi,demo,result,0)
+print(re)
+
+
+# In[81]:
+
+
+use=np.zeros(30)
+result=[[]]*30
+maxi=[0]
+def check_de(de,maxi,result,use,aban):
+    tem=sum(de)
+    test=[de[i] for i in range(20) if i not in aban]
+    if tem>maxi[0]:
+        maxi[0]=tem
+        print(maxi[0])
+        print(de)
+        print(result)
+        print(use)
+        print(aban)
+    if sum(test)==len(test)*3:
+        return True
+    else:
+        return False
+def find_urgent(use,demo,aban):
+    demo2=np.zeros(20).tolist()
+    mini=9999
+    for i in range(len(paths)):
+        if use[i]:
+            continue
+        for j in paths[i]:
+            if demo[j[0]]<3 and demo[j[1]]<3:
+                demo2[j[0]]+=1
+                demo2[j[1]]+=1
+    for i in range(len(demo2)):
+        if demo[i]==3 or i in aban:
+            demo2[i]=9999
+#     print(demo2)
+    urg = demo2.index(min(demo2))
+    return urg
+def find_now(demo):
+    for i in demo:
+        if i<3:
+            return demo.index(i)
+    return -1
+def find_position(num,demo,use):
+    result=[]
+    for i in range(len(paths)):
+        if use[i]:
+            continue
+        for j in paths[i]:
+            if num in j and demo[sum(j)-num]<3:
+                result.append([i,j])
+    return result
+#     while True:
+#         end=True
+#         for i in range(len(result)-1):
+#             if sum(result[i][1])>sum(result[i+1][1]):
+#                 result[i],result[i+1]=result[i+1],result[i]
+#                 end=False
+#         if end:
+#             return result
+def recur2(demo,result,use,maxi,aban):
+    demo=copy.deepcopy(demo)
+    result=copy.deepcopy(result)
+    use=copy.deepcopy(use)
+    if check_de(demo,maxi,result,use,aban):
+        return result
+#     now=find_now(demo)
+    now=find_urgent(use,demo,aban)
+#     print(now)
+    pos=find_position(now,demo,use)
+    while not pos:
+        aban.append(now)
+        now=find_urgent(use,demo,aban)
+        pos=find_position(now,demo,use)
+    for p in pos:
+        demo[p[1][0]]+=1
+        demo[p[1][1]]+=1
+        result[p[0]]=p[1]
+        use[p[0]]+=1
+        tem=recur2(demo,result,use,maxi,aban)
+        if tem:
+            return result
+        demo[p[1][0]]-=1
+        demo[p[1][1]]-=1
+        result[p[0]]=[]
+        use[p[0]]=0
+    print('False')
+    return False
+aban=[]
+re=recur2(demo,result,use,maxi,aban)
+print(re)
+
+
+# In[22]:
+
+
+demo0=np.zeros(20)
+demo2=np.zeros(20)
+demo3=[copy.deepcopy([]) for i in range(20)]
+# print(demo3)
+for path in paths:
+    tem=np.zeros(20)
+    for i in path:
+        demo0[i[0]]+=1
+        demo0[i[1]]+=1
+        tem[i[0]]=1
+        tem[i[1]]=1
+        index=paths.index(path)
+#         print(demo3,demo3[i[0]],index)
+        if index not in demo3[i[0]]:
+            demo3[i[0]].append(index)
+        if index not in demo3[i[1]]:
+            demo3[i[1]].append(index)
+#         print(i,demo3)
+    demo2+=tem
+print(demo0.tolist())
+print(demo2.tolist())
+for i in demo3:
+    print(i)
+for i in range(len(paths)):
+    print(find_position(i,demo,use))
+
+
+# In[20]:
+
+
+# print(re)
+# print(points_all)
+data=[]
+for i in range(29):
+    a=points_all[i][re[i][0]]
+    b=points_all[i][re[i][1]]
+    c=i%6*100+2000
+    a.append(c)
+    b.append(c)
+    data.append([a,b])
+print(data)
+
+
+# In[27]:
+
+
+a=1
+b=[2]
+def demo():
+    print(b)
+    print(a)
+    demo()
+demo()
+
