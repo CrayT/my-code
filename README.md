@@ -1,2 +1,2 @@
 # my-code
-code in github.
+Personal code in github.
