@@ -36,7 +36,7 @@ def ccc(ip_list,m):
         #proxies = {'http': proxy_ip}
         return proxy_ip
 
-    urltoupiao = "http://www.topsunshine.cn/toupiao/13.html"
+    urltoupiao = "https://mp.weixin.qq.com/s/ZCTByiRpTpm_q7_ZwxwW6g"
 
 
     headers={
@@ -58,16 +58,16 @@ def ccc(ip_list,m):
     print(proxy)
     resp = requests.get(urltoupiao,headers=headers,proxies=proxy,timeout=15,verify=False) 
     soup = BeautifulSoup(resp.text,'lxml')
-    car_list = soup.find('span',{'id':'ContentPlaceHolder2_Label1'})
-    print("第%s次尝试结果:\n"%(m),car_list)
-    print('\n')
-    num+=1
-    ss=str(car_list)
-    if r"成功" in ss:
-        summ+=1
-        print("\n成功投票：%s次\n"%(summ))
-    else:
-        print("成功%s次!\n"%(summ))
+    # car_list = soup.find('span',{'id':'ContentPlaceHolder2_Label1'})
+    # print("第%s次尝试结果:\n"%(m),car_list)
+    # print('\n')
+    # num+=1
+    # ss=str(car_list)
+    # if r"成功" in ss:
+    #     summ+=1
+    #     print("\n成功投票：%s次\n"%(summ))
+    # else:
+    #     print("成功%s次!\n"%(summ))
 
 
 def test(x):

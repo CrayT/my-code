@@ -20,7 +20,7 @@ WIDTH = args.width
 HEIGHT = args.height
 OUTPUT = args.output
 
-ascii_char = list(" 000000000000")
+ascii_char = list("*&%##$)!_+ASFasfasdpot.,/\`\|mncziutq$Ao")
 
 
 # 将256灰度映射到字符上

@@ -1,3 +1,4 @@
+# coding:utf-8
 # import requests
 # import json
 # import numpy as np
@@ -2943,6 +2944,8 @@ def turtal():
     #         mer[-1][1] = max(item[1], mer[-1][1])
     # return merv
 
+
+
 #装饰器示例
 # import time
 # def log(func): #显示运行时间：将函数名作为参数传入装饰器，
@@ -2960,5 +2963,419 @@ def turtal():
 #     print('x + y = %d'%(x+y))
 # exa(1,4)
 
-a = 'awer'
-print(a.__len__())
+
+
+
+#利用filter产生素数
+# def odd():
+#     n = 1
+#     while True: #产生奇数序列
+#         n += 2
+#         yield n #加入迭代器
+# def check(n):#x是否能被n整除，不能就返回，供filter调用
+#     return lambda x: x%n > 0 
+# def prime():
+#     yield 2
+#     ii = odd()
+#     while True:
+#         x = next(ii) #从序列中取出元素
+#         yield x #加入prime的迭代器
+#         ii = filter(check(x), ii) #更新序列，第一遍筛除掉3的倍数，剩下的序列给迭代器ii，再下一轮筛掉5的倍数，依次进行
+# for y in prime():
+#     if y < 100:
+#         print(y)
+#     else:
+#         break
+
+
+
+#Leetcode 322 零钱兑换：
+# 给定不同面额的硬币 coins 和一个总金额 amount。编写一个函数来计算可以凑成总金额所需的最少的硬币个数。如果没有任何一种硬币组合能组成总金额，返回 -1。
+#法1，递归，一般会超时，这里设置一个flag数组(变量不可以)，找到后就更改值，然后在递归函数下判断该值,并返回，但是在无解情况下复杂度会导致超时。
+# def decr(coins, target, stac):
+#     if target <= 0 or flag[0]: #一起判断flag
+#         return 
+#     for i in range(len(coins)):
+#         stac.append(coins[i])
+#         t = target - coins[i] #消减后数值
+#         decr(coins, t, stac)
+#         if t == 0:
+#             res.append(len(stac))
+#             stac.pop()
+#             flag[0]  = 1  #关键点：已找到，并修改变量。条件符号，递归逐层退出。
+#         else:
+#             stac.pop()
+# coins = [186,419,83,408]
+# amount = 6249
+# stac = [] #存储兑换方法
+# res = []
+# flag = [0] #设置判断变量
+# coins = sorted(coins, reverse = True) #逆序
+# decr(coins, amount, stac)
+# print(res)
+# return res[0] if res else -1
+
+
+#法2：动态规划：递推表达式： F[i] = min(F[i - Ci] + 1), 即当前金币数i减去零钱的F值再加上该零钱的1个。
+# dp =[0] #初始化，0
+# for i in range(1, amount + 1):
+#     i_coin = amount + 1 #如果不能兑换，用amount+1表示。
+#     for coin in coins:
+#         if coin <= i:
+#             i_coin = min(dp[i - coin] + 1, i_coin)
+#     dp.append(i_coin)
+# return -1 if dp[-1] > amount else dp[-1]
+
+#法3：带备忘录的递归，记录每次的状态
+# memo = [-2] * (amount + 1) #memo中存放索引对应的兑换方法,-2表示NG
+# def changeCoin(coins, target, memo):
+#     if target == 0: #已找到一种方案
+#         return 0
+#     if memo[target] != -2: #对应方案已存在备忘录中，直接返回
+#         return memo[target]
+#     coin_num = sys.maxsize
+#     for coin in coins:
+#         if target < coin:
+#             continue
+#         amount_tmp = changeCoin(coins, target - coin, memo)
+#         if amount_tmp == -1: # -2 + 1 = -1，所以-1代表子问题无解，不必继续求下去
+#             continue
+#         coin_num = min(coin_num, amount_tmp + 1) #amount_tmp + 1即为当前coin下的兑换数。
+#     memo[target] = coin_num if coin_num != sys.maxsize else -1
+#     return memo[target]
+# changeCoin(coins, amount, memo)
+# return memo[amount]
+
+
+
+# Leetcode394 字符串解码
+# 给定一个经过编码的字符串，返回它解码后的字符串。
+# 编码规则为: k[encoded_string]，表示其中方括号内部的 encoded_string 正好重复 k 次。注意 k 保证为正整数。
+# 如：s = "3[a2[c]]", 返回 "accaccacc".
+#借助栈来做这类题。
+# def decodeString(s): #完全自己写，没有看题解。
+#     if not s:
+#         return ''
+#     stack = []
+#     for item in s:
+#         if item == ']': #第一次遇到右括号，开始弹出直到遇到匹配左括号。
+#             #1 获取字符：
+#             string_tmp = [] #本次弹出‘[]'内的字符
+#             stack_pop = stack.pop() #开始出栈，直到遇到'['.
+#             while stack_pop != '[':
+#                 string_tmp.append(stack_pop) #用数组暂存弹出字符，不用字符串，因为字符串在后面颠倒的时候会乱掉。
+#                 stack_pop = stack.pop() #继续弹出。
+#             string_tmp = ''.join(string_tmp[::-1]) #因为是倒着添加的，所以需要先翻转然后再连接成字符串
+
+#             #2 获取数字：
+#             string_num = '' #获取'[' 前面的数字
+#             while stack and stack[-1].isdigit(): #前面是数字，取出,并且需要判断stack是否已为空
+#                 string_num += stack.pop()
+#             string_num = string_num[::-1] #取反获得数字
+
+#             #3 拼接字符串：
+#             string_combination = '' #获取数字和字符串后，拼接起来。
+#             if string_num:
+#                 for i in range(int(string_num)): #连续合并字符串。
+#                     string_combination += string_tmp
+            
+#             #4 新字符串入栈：
+#             stack.append(string_combination) #将合并后的字符串放入栈，完成此次出栈。
+#         else:
+#             stack.append(item) #不是右括号就将字符进栈。
+#     # print(stack)
+#     res = ''
+#     for item in stack:
+#         if not item.isdigit(): #如果只有数字，表示原字符串没有括号，将其舍去。
+#             res += item
+#     return res
+
+
+# 146. LRU缓存机制
+# 设计和实现一个  LRU (最近最少使用) 缓存机制。它应该支持以下操作： 获取数据 get 和 写入数据 put 。
+# 获取数据 get(key) - 如果密钥 (key) 存在于缓存中，则获取密钥的值（总是正数），否则返回 -1。
+# 写入数据 put(key, value) - 如果密钥不存在，则写入其数据值。当缓存容量达到上限时，它应该在写入新数据之前删除最近最少使用的数据值，从而为新的数据值留出空间。
+'''
+from collections import deque, OrderedDict
+class LRUCache:
+    #法1：利用数组，速度慢。
+    def __init__(self, capacity: int):
+        self.capacity = capacity #长度
+        self.LRU_key = [] #数组结构
+        self.LRU_value = []
+        self.LRU_dic = OrderedDict({})
+
+    def get(self, key):
+        if key in self.LRU_key: #存在返回，并更新时间
+            key_index = self.LRU_key.index(key)
+            return_result = self.LRU_value[key_index] 
+            self.refresh(self.LRU_key, self.LRU_value, key_index) #更新结构
+            return return_result
+        else:  #不存在，返回-1.
+            return -1
+    def put(self, key, value):
+        if key in self.LRU_key: #key已存在，进行覆盖并更新
+            key_index = self.LRU_key.index(key)
+            self.LRU_value[key_index] = value
+            self.refresh(self.LRU_key, self.LRU_value, key_index) #更新结构
+        elif len(self.LRU_key) < self.capacity: #未满
+            self.LRU_key.append(key)
+            self.LRU_value.append(value)
+        else: #已满
+            del self.LRU_key[0] #还是用数组做。
+            self.LRU_key.append(key)
+            del self.LRU_value[0]
+            self.LRU_value.append(value)        
+    def refresh(self, LRU_key, LRU_value, key_index): #更新列表
+        if key_index < self.capacity - 1: #访问元素移动至右端
+            self.LRU_key = self.LRU_key[:key_index] + self.LRU_key[key_index+1:] + [self.LRU_key[key_index]]
+            self.LRU_value = self.LRU_value[:key_index] + self.LRU_value[key_index+1:] + [self.LRU_value[key_index]]
+        else:
+            pass
+
+
+    #法2，利用字典，OrderedDict（可以将元素移到队首或队尾），速度快
+    def _get(self, key):
+        if key not in self.LRU_dic.keys():
+            return -1
+        else:
+            self.LRU_dic.move_to_end(key) #移到队尾。
+            return self.LRU_dic[key]
+    def _put(self, key, value):
+        print(self.LRU_dic)
+        if key in self.LRU_dic:
+            self.LRU_dic.move_to_end(key)
+        self.LRU_dic[key] = value
+        if len(self.LRU_dic) > self.capacity:
+            self.LRU_dic.popitem(last = False)
+'''
+#测试：
+# lru = LRUCache(2)
+# lru.put(2,1)
+# lru.put(1,1)
+# lru.put(2,3)
+# lru.put(4,1)
+# print(lru.get(1)) #-1
+# print(lru.get(2)) #3
+# print(lru.get(4)) #1
+# lru._put(2,1)
+# lru._put(1,1)
+# lru._put(2,3)
+# lru._put(4,1)
+# print(lru._get(1)) #-1
+# print(lru._get(2)) #3
+# print(lru._get(4)) #1
+
+
+
+# d = OrderedDict({'a':1,'b':2,'c':3,'d':4})
+# # print(d, k.keys(), len(d))
+# d.move_to_end('a')#,last=False) #last为 False 移到队首
+# d.move_to_end('b')#,last=False)
+# d.move_to_end('c')#,last=False)
+# d.move_to_end('d')#,last=False)
+# print(d)
+# d.popitem(last=True) #移除队尾
+# print(d)
+# d['e'] = 5
+# print(d)
+
+
+
+
+# Leetcode 15三数之和：
+# 给定一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？找出所有满足条件且不重复的三元组。
+# def threeSum(nums):
+#     if len(nums) <= 2:
+#         return 
+#     '''
+#     res = []#法1，超时，时间复杂度O(n**2)
+#     Hash = {}
+#     for i in range(len(nums) - 1):
+#         if nums[i] > 0:
+#                 break
+#         for j in range(i + 1, len(nums)):
+#             if nums[j]  in Hash :#and (j not in dic[nums[j]]):
+#                 temp = [nums[j]] + Hash[nums[j]]
+#                 if sorted(temp) not in res:
+#                     res.append(sorted(temp))
+#                 pass
+#             else:
+#                 Hash[0 - nums[i] - nums[j]] = [nums[i], nums[j]]
+#     '''
+
+#     #法2，排序 + 双指针
+#     nums = sorted(nums) #从小到大排序
+#     for i in range(len(nums)):
+#         if nums[i] > 0:
+#             break
+#         if i > 0 and nums[i] == nums[i - 1]: #如果相等，且上一轮已判断过，这次就可以直接跳过
+#             continue
+#         L, R = i + 1, len(nums) - 1
+#         while L < R:
+#             if nums[i] + nums[L] + nums[R] == 0:
+#                 res.append([nums[i], nums[L], nums[R]])
+#                 while L < R and nums[L] == nums[L + 1]: #重复相等值，避免出现重复答案，向前向后移动指针。
+#                     L += 1
+#                 while L < R and nums[R] == nums[R - 1]:
+#                     R -= 1
+#                 L += 1
+#                 R -= 1
+#             elif nums[i] + nums[L] + nums[R] > 0:
+#                 R -= 1
+#             else:
+#                 L += 1
+#     return res
+
+
+# import bisect
+# def threeSum(nums):
+#     ans = []
+#     counts = {}
+#     for i in nums:
+#         counts[i] = counts.get(i, 0) + 1
+#     nums = sorted(counts)
+#     for i, num in enumerate(nums):
+#         if counts[num] > 1:
+#             if num == 0:
+#                 if counts[num] > 2:
+#                     ans.append([0, 0, 0])
+#             else:
+#                 if -num*2 in counts:
+#                     ans.append([num, num, -2*num])
+#         if num < 0:
+#             twosum = -num
+#             left = bisect.bisect_left(nums, (twosum-nums[-1]), i+1)
+#             for i in nums[left:bisect.bisect_right(nums, (twosum//2), left)]:
+#                 j = twosum-i
+#                 if j in counts and j != i:
+#                     ans.append([num, i, j])
+#     return ans
+# nums = [-1, 0, 1, 2, -1, -4]
+# print(threeSum(nums))
+# counts = {}
+# r = bisect.bisect_left(nums, 1, lo = 3)
+# print(r)
+
+
+
+# Leetcode 229，求众数：
+# 给定一个大小为 n 的数组，找出其中所有出现超过 ⌊ n/3 ⌋ 次的元素。
+# 说明: 要求算法的时间复杂度为 O(n)，空间复杂度为 O(1)。
+'''
+def majorityElement(nums):
+    if len(nums) < 3:
+        return set(nums)
+    length = len(nums)//3
+    res = {}
+    result = []
+    #法1，遍历一遍，记下每个数字出现次数。
+    # for i in range(len(nums)):
+    #     if nums[i] not in res:
+    #         res[nums[i]] = 0
+    #     else:
+    #         res[nums[i]] += 1
+    #         if res[nums[i]] >= length and nums[i] not in result:
+    #             result.append(nums[i])
+
+    #法2，先排序，然后遍历一遍，利用计数器，如果和前一个相等，计数器加一，直到不相等，判断出现次数。
+    nums = sorted(nums)
+    count = 1
+    tmp = nums[0] #初始值。
+    for i in range(1, len(nums)):
+        if nums[i] == tmp:
+            count += 1
+            if i != len(nums) - 1: #最后一个边界情况，不能continue了，否则会错过。
+                continue
+        if count > length:
+            result.append(nums[i - 1])
+        count = 1 #计数器归位。
+        tmp = nums[i] #记下当前值，   
+    return result
+'''
+
+
+
+# LeeCode 513. 找树左下角的值:
+# 给定一个二叉树，在树的最后一行找到最左边的值。
+#法1：层次遍历，记录每层的值，最后返回最后一层的第一个值。
+# def __init__(self):
+#     self.treeList = []
+# def findLast(self, root, level):
+#     if len(self.treeList) == level:
+#         self.treeList.append([])
+#     self.treeList[level].append(root.val)
+#     if root.left:
+#         self.findLast(root.left, level + 1)
+#     if root.right:
+#         self.findLast(root.right, level + 1)
+
+#法2，利用tuple记录层与root，然后利用栈来弹出每个节点。
+# def findLast(self, root):
+#     temp = (0, root)
+#     stac = [temp]
+#     while stac:
+#         depth, node = stac.pop()
+#         if depth >temp[0]: #更新层，节点
+#             temp = (depth, node)
+#         if node.right: #先加入右，再加左，使下一个循环时，左节点最先pop
+#             stac.append((depth + 1, node.right))
+#         if node.left:
+#             stac.append((depth + 1, node.left))
+#     return temp
+# def findBottomLeftValue(self, root):
+    #法1调用：
+    # self.findLast(root, 0)
+    # return self.treeList[-1][0]
+    #法2调用：
+    # return self.findLast(root)[1].val
+
+
+
+#Fibonacci数列的自顶向下的备忘录动态规划方法：
+# def fib(n, memo):
+#     if memo[n] != 0:
+#         return memo[n]
+#     if n <= 2:
+#         memo[n] = 1
+#     else:
+#         memo[n] = fib(n-1, memo) + fib(n-2, memo)
+#     print(n,memo)
+#     return memo[n]
+# if __name__ == '__main__':
+#     n = 6
+#     memo = [0]*(n+1)
+#     x = fib(n, memo)
+#     print(x)
+
+
+#快排
+def quickSortDemo():
+
+    arr = [1,4,2,6,5,9,7,4]
+    def Quick(ar, l, r):
+        temp = arr[l] #基准
+        while l < r:
+            print(l, r)
+            while l < r and ar[r] >= temp: #右边找大
+                r -= 1
+            if r > l:
+                ar[l] = ar[r] #交换
+            while l < r and ar[l] <= temp: #左边找小
+                l += 1
+            if r > l:
+                ar[r] = ar[l] #交换
+        
+        ar[l] = temp #交换哨兵
+        return l
+    def partion(ar, l, h):
+        if l < h:
+            index = Quick(ar, l, h) #找临界点并完成一轮交换 左小右大
+            print('index:', index)
+            print('ar:', ar)
+            partion(ar, l, index - 1) #递归排序
+            partion(ar, index + 1, h)
+    left = 0 
+    right = len(arr) - 1
+    partion(arr, left, right);
+    print(arr)

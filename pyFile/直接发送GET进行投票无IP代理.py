@@ -6,12 +6,9 @@ import requests
 import time
 from bs4 import BeautifulSoup
 import json
-url=u'http://www.topsunshine.cn/toupiao/13.html'
+url=u'https://mp.weixin.qq.com/s/ZCTByiRpTpm_q7_ZwxwW6g'
 from splinter import Browser
-from xlrd import xldate_as_tuple
-from openpyxl import load_workbook
-from xlrd import open_workbook
-import  xlwt
+
 #executable_path = {'/Applications/chrome'}
 
 global summ
@@ -37,17 +34,10 @@ for i in range(10):
         "Referer": "http://www.topsunshine.cn/info/13.html",
         "User-Agent": "User-Agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Mobile Safari/537.36"    
         }
-        html = requests.get(url=url, headers=headers).text
-        #print(html)
-        soup = BeautifulSoup(html, 'lxml')
-        car_list = soup.find('span',{'id':'ContentPlaceHolder2_Label1'}).text
-        print("\n第%s次尝试结果:\n"%(num),car_list)
-        num+=1
-        if "成功" in car_list:
-            summ+=1
-            print("\n成功投票：%s次\n"%(summ))
-        else:
-            print("成功%s次!\n"%(summ))
+        html = requests.get(url=url).text
+        print(html)
+        time.sleep(3)
+
 
 
 '''  
