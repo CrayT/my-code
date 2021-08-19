@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # coding:utf-8
+=======
+#coding=utf8
+>>>>>>> a7ec5911efd28e89d399a129d7bb5367e6099ea0
 # import requests
 # import json
 # import numpy as np
@@ -699,7 +703,11 @@ while n > 0:
 #         result.append(list(item))
 #     return result
 # tmp = ss(A)
+<<<<<<< HEAD
 # print(tmp)
+=======
+# print('tmp',tmp)
+>>>>>>> a7ec5911efd28e89d399a129d7bb5367e6099ea0
 
 # for i in range(len(tmp)):
 #     flag = True
@@ -1156,6 +1164,10 @@ print(s1) #s1的最后一个元素就是最后一个找到的最长回文子串
 #             next_list.append(point)
 #         else:
 #             point = next_list[point]
+<<<<<<< HEAD
+=======
+#             print(point)
+>>>>>>> a7ec5911efd28e89d399a129d7bb5367e6099ea0
 #     print(next_list)
 #     return next_list
 
@@ -1172,8 +1184,13 @@ print(s1) #s1的最后一个元素就是最后一个找到的最长回文子串
 #     else:
 #         print("fail")
 
+<<<<<<< HEAD
 # s1 = "adcbabcdafabcd2"
 # s2 = 'abcda'
+=======
+# s1 = "adcbaacdabcfabcd2"
+# s2 = 'aacda'
+>>>>>>> a7ec5911efd28e89d399a129d7bb5367e6099ea0
 # KMP_match(s2, s1, cal_next(s2))
 
 # s_rev = s[::-1] #翻转
@@ -3349,9 +3366,411 @@ def majorityElement(nums):
 #     print(x)
 
 
+
+# import requests
+# url = 'http://127.0.0.1:5000/AIProcessor/upload'
+# print(requests.get('http://127.0.0.1:5000/'))
+# res = requests.post(url=url)
+# print(res)
+
+# 223. 矩形面积：
+# 在二维平面上计算出两个由直线构成的矩形重叠后形成的总面积。
+# 每个矩形由其左下顶点和右上顶点坐标表示
+# def computeArea(A, B, C, D, E, F, G, H):
+#     """
+#     :type A: int
+#     :type B: int
+#     :type C: int
+#     :type D: int
+#     :type E: int
+#     :type F: int
+#     :type G: int
+#     :type H: int
+#     :rtype: int
+#     """
+#     #单个面积
+#     s1 = calcArea(A, B, C, D)
+#     s2 = calcArea(E, F, G, H)
+#     #求重叠面积
+#     w = max(0, max(G,C) - min(A, E) - abs(E-A) - abs(G-C))
+#     H = max(0, max(D,H) - min(B,F) - abs(D-H) - abs(B-F))
+#     s0 = w * H
+#     #有无重叠：
+#     print(s1 + s2 - s0)
+# def calcArea(a, b, c, d):
+#     return abs(a-c) * abs(b-d)
+# computeArea(-3, 0, 3, 4, 0, -1, 9, 2)
+
+#n类物品，每个物品有不同尺寸，求包含所有物品，每种物品只有一个的组合，且每个物品尺寸不能相同
+# import copy
+# test = [
+#     [1,2,3], 
+#     [2,4],
+#     [5,8]
+#     ]
+# m = len(test)
+# n=len(test[0])
+
+# res = []
+
+# for i in range(len(test[0])):
+#     res.append([test[0][i]])
+# print('初始化：\n',res)
+
+# #首位进
+# def appendV2(ele, re):
+#     print('开始进', re, len(re))
+#     for i in range(len(re) - 1, -1, -1):
+#         if ele in re[i]:
+#             print('重复，删', ele)
+#             del re[i] #从res中删除重复值
+#         else:
+#             print('进', ele)
+#             re[i].append(ele)
+#     return re
+# cons = []
+# for i in range(1, m):
+#     #暂存起始状态：
+#     cons = copy.deepcopy(res)
+#     print('开始暂存cons：', cons)
+#     #首位
+#     first = test[i][0]
+#     res = appendV2(first, res)
+#     print("第一轮结果", res, cons)
+
+#     #后
+#     for j in range(1, len(test[i])):
+#         if test[i][j] == first:
+#             continue
+#         print('当前ele:', test[i][j])
+
+#         temp = appendV2(test[i][j], cons)
+#         print('暂存态：', temp)
+#         #continue
+
+#         res = res + temp
+#         print('暂时合并结果：', res)
+# print('最终组合结果：\n', res, '\n组合数量：',len(res))
+
+
+# points = [[2,1],[2,2],[3,3]]
+# angle = 90
+# location = [1,1]
+# points2 = [] #去中心化坐标
+# angleList = [] #每个坐标角度
+# for e in points:
+#     points2.append([e[0] - location[0], e[1] - location[1]])
+ 
+
+
+# board = [
+#   ['A','B','C','E'],
+#   ['S','F','C','S'],
+#   ['A','D','E','E']
+# ]
+
+# mp = [[0 for _ in range(len(board[0]))] for _ in range(len(board))]
+# print(mp)
+
+# col = len(board[0])
+# row = len(board)
+
+# word1 = "ABCCED"
+# word2 = "ABCB"
+# direction = [[0,1], [0, -1], [-1,0], [1,0]]
+
+# # DFS:
+# path = []
+# def dfs(i, j, s):
+#     if len(word1) == s:
+#         return True
+#     if i < 0 or j < 0 or i >= row or j >= col:
+#         return False
+#     if mp[i][j]:
+#         return False
+    
+#     if word1[s] != board[i][j]:
+#         return False
+
+#     mp[i][j] = True
+#     rr = dfs(i + 1, j, s+1) or dfs(i - 1, j, s+1) or dfs(i, j + 1, s+1) or dfs(i, j - 1, s+1)
+#     if rr:
+#         return True
+#     mp[i][j] = False
+#     return False
+# find = False
+# for i in range(row):
+#     for j in range(col):
+        
+#         r = dfs(i, j, 0)
+#         if r:
+#             find = True
+#             print('Found it：\n', mp)
+# if not find:
+#     print('not found')
+
+
+#n皇后问题：
+#判断
+# def could_replace(row, col):
+#     return not (cols[col] + dia1[row + col] + dia2[row - col])
+# #放置
+# def place(r, c):
+#     queen.append([r,c])
+#     cols[c] = 1
+#     dia1[r + c] = 1
+#     dia2[r - c] = 1
+# #删除回退
+# def remove(r, c):
+#     queen.pop()
+#     cols[c] = 0
+#     dia1[r + c] = 0
+#     dia2[r - c] = 0
+
+# def resolve():
+#     so = []
+#     for it in queen:
+#         so.append('.' * it[1] + 'Q' + '.' * ( n - it[1] - 1))
+#     res.append(so)
+# #回溯主方法
+# def back_trace(r = 0):
+#     for i in range(n):
+#         if(could_replace(r, i)): #判断是否可行
+#             place(r, i) #放置逻辑
+#             if r + 1 == n: #达到边界
+#                 resolve()
+#             else: #继续进行
+#                 back_trace(r + 1)
+#             remove(r, i)
+# n = 5
+# res = []
+# cols = [0 for _ in range(n)] #列
+# dia1 = [0 for _ in range(2 * n - 1)] #左下右上
+# dia2 = [0 for _ in range(2 * n - 1)] #左上右下
+
+# queen=[];
+
+# back_trace()
+
+# print('%d queens solutions:\n'%n, res)
+
+
+# s='daaaadcdf'
+# r = [s[0]]
+# for i in range(1, len(s)):
+#     if len(r) and r[-1] == s[i]:
+#         r.pop()
+#     else :
+#         r.append(s[i])
+# print("".join(r))
+
+#LeeCode：980
+# matrix = [[0,1,0,0],[0,0,0,0],[0,0,2,-1]]
+# m = len(matrix)
+# n = len(matrix[0])
+# dire = [[-1,0],[1,0],[0,-1],[0,1]]
+# def back_trace(i, j):
+#     print(i,j)
+#     if i < 0 or i >= m or j < 0 or j >= n:
+#         return False
+#     if matrix[i][j] == -1 or trace[i][j] == 1:
+#         return False
+#     if matrix[i][j] == 2:
+#         return True
+#     path.append([i,j])
+#     print('path',path)
+#     for d in dire:
+#         ii = i + d[0]
+#         jj = j + d[1]
+#         trace[i][j] = 1
+#         print(ii,jj)
+#         t = back_trace(ii, jj)
+#         print('t',t)
+#         if t:
+#             print(path)
+#             res.append(path)
+#             return True
+#         trace[i][j] = 0
+#         path.pop()
+#         continue
+#         return False
+
+# res = []
+# path = []
+# trace = [[0 for _ in range(n)] for _ in range(m)]
+# for i in range(m):
+#     for j in range(n):
+#         if matrix[i][j] == 1:
+#             t = back_trace(i,j)
+#             print('res', res)
+#             if t:
+#                 print('res:\n', res)
+
+#接雨水，解法1：动态编程
+#height=[0,1,0,2,1,0,1,3,2,1,2,1]
+#num = len(height)
+# left = [0] * num
+# right = [0] * num
+# for i in range(1, num):
+#     left[i] = max(height[i], left[i-1])
+# for i in range(num - 2, -1, -1):
+#     right[i] = max(right[i + 1], height[i])
+# vol = 0
+# for i in range(num):
+#     t = min(left[i] - height[i], right[i] -height[i])
+#     if t<0:
+#         t= 0
+
+#     vol += t
+
+#解法2：双指针
+# left = 0
+# right = num - 1
+# left_max = 0
+# right_max = 0
+# vol = 0
+# while left < right:
+#     #当左边低右边高时，有理由相信水的高度决定于左边，反之决定于右边。
+#     if height[left] < height[right]:
+#         if height[left] <= left_max:
+#             vol += (left_max - height[left])
+#         else:
+#             left_max = height[left]
+#         left += 1
+#     else:
+#         if height[right] <= right_max:
+#             vol += (right_max - height[right])
+#         else:
+#             right_max = height[right]
+#         right -= 1
+# print(vol)
+
+
+
+
+#LeeCode114: 二叉树展开为链表
+# 给你二叉树的根结点 root ，请你将它展开为一个单链表：
+# 展开后的单链表应该同样使用 TreeNode ，其中 right 子指针指向链表中下一个结点，而左子指针始终为 null 。
+# 展开后的单链表应该与二叉树 先序遍历 顺序相同。
+# 输入：root = [1,2,5,3,4,null,6]
+# 输出：[1,null,2,null,3,null,4,null,5,null,6]
+
+# def flatten(root):
+#     #思路就是将一个节点的右子树挂在左子树的最右节点，然后将节点左子树挂在右子树，左子树赋空
+#     while root:
+#         if root.left == None:
+#             root = root.right
+#         else:
+#             pre = root.left
+#             #找左子树的最右子节点
+#             while pre.right:
+#                 pre = pre.right
+#             pre.right = root.right
+#             root.right = root.left
+#             root.left = None
+#             root = root.right
+# root = [1,2,5,3,4,null,6]
+# print(flatten(root))
+
+
+
+#排列组合1:
+# candidates =[3,1,3,5,2,4,6]
+# target = 6
+# res = []
+# stack=[]
+# def track(nums, tmp):
+#     if not nums:
+#         res.append(tmp[:])
+#         return
+#     for i in range(len(nums)):
+#         tmp.append(nums[i])
+#         num = nums[:]
+#         del num[i]
+#         track(num, tmp)
+#         tmp.pop()
+# track(candidates,stack)
+
+#排列组合2:
+# def track(nums, tmp):
+#     if not nums:
+#         if tmp not in res:
+#             res.append(tmp[:])
+#         return
+#     for i in range(len(nums)):
+#         tmp.append(nums[i])
+#         num = nums[:]
+#         del num[i]
+#         track(num, tmp)
+#         tmp.pop()
+# track(candidates,stack)
+# print(res)
+
+###总和等于target的排列组合：
+# def track(nums, tmp):
+#     if sum(tmp) == target:
+#         if tmp not in res:
+#             res.append(tmp[:])
+#         return
+#     if not nums:
+#         return
+#     for i in range(len(nums)):
+#         tmp.append(nums[i])
+#         num = nums[:]
+#         del num[i]
+#         track(num, tmp)
+#         tmp.pop()
+# track(candidates,stack)
+# print(res)
+
+
+###LeeCode 63 不同路径 II 动态规划
+# 一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为“Start” ）。
+# 机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为“Finish”）。
+# 现在考虑网格中有障碍物。那么从左上角到右下角将会有多少条不同的路径？
+# 网格中的障碍物和空位置分别用 1 和 0 来表示
+# obstacleGrid = [[0,0,0],[0,1,0],[0,0,0]]
+# if obstacleGrid[-1][-1] == 1 or obstacleGrid[0][0] == 1:
+#     print(0)
+# col = len(obstacleGrid[0])
+# row = len(obstacleGrid)
+# dp = [[0 for _ in range(col)] for _ in range(row)]
+
+# for i in range(col):
+#     if obstacleGrid[0][i] == 1:
+#         dp[0][i] = 0
+#         break
+#     else:
+#         dp[0][i] = 1
+# for i in range(row):
+#     if obstacleGrid[i][0] == 1:
+#         dp[i][0] = 0
+#         break
+#     else:
+#         dp[i][0] = 1
+# for i in range(1, row):
+#     for j in range(1, col):
+#         if obstacleGrid[i][j] == 1:
+#             dp[i][j] = 0
+#         else:
+#             dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
+# print(dp)
+
+
+###LeeCode 980 不同路径 III
+# 在二维网格 grid 上，有 4 种类型的方格：
+# 1 表示起始方格。且只有一个起始方格。
+# 2 表示结束方格，且只有一个结束方格。
+# 0 表示我们可以走过的空方格。
+# -1 表示我们无法跨越的障碍。
+# 返回在四个方向（上、下、左、右）上行走时，从起始方格到结束方格的不同路径的数目。
+# 每一个无障碍方格都要通过一次，但是一条路径中不能重复通过同一个方格。
+#path = [[1,0,0,0],[0,0,0,0],[0,0,2,-1]]
+#print(path)
+
+
 #快排
 def quickSortDemo():
-
     arr = [1,4,2,6,5,9,7,4]
     def Quick(ar, l, r):
         temp = arr[l] #基准

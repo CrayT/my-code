@@ -1,0 +1,64 @@
+site_name: 多用途云平台帮助文档
+site_author: zhonger
+copyright: 'Copyright &copy; 上海大学类脑实验室'
+theme:
+  name: 'material'
+repo_name: blcc/shyunhelp
+repo_url: https://git.dlcloud.info/git/blcc/shyunhelp
+edit_uri: ""
+
+extra_css: [extra.css]
+extra:
+  social:
+    - type: globe
+      link: https://lisz.io
+    - type: github-alt
+      link: https://github.com/zhonger
+
+pages:
+  - '文档总览': 'index.md'
+  - '搭建文档':
+    - '基础配置': 'install/base.md'
+    - 'CUDA安装': 'install/cuda.md'
+    - 'Ruby安装': 'install/ruby.md'
+    - 'Docker安装': 'install/docker.md'
+    - 'Nextcloud云盘': 'install/nextcloud.md'
+    - 'Slurm任务管理': 'install/slurm.md'
+    - 'Gitlab-runner安装': 'install/gitlab-runner.md'
+    - 'Kubernetes安装': 'install/kubernetes.md'
+  - '使用文档':
+    - 'Nextcloud云盘': 'usage/nextcloud.md'
+    - '镜像站': 'usage/mirrors.md'
+    - 'Dockerhub': 'usage/dockerhub.md'
+    - 'Kubernetes之Pods部署': 'usage/pod-healthy.md'
+    - 'Kubernetes之Service部署': 'usage/service.md'
+    - 'Kubernetes之Volume使用': 'usage/kubernetes-volume.md'
+  - 'API文档':
+    - '虚拟机API': 'API/vm.md'
+  - '贡献文档': 'contribute.md'
+
+markdown_extensions:
+  - admonition
+  - codehilite:
+      linenums: true
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:pymdownx.emoji.to_svg
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+extra_javascript:
+  - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'
