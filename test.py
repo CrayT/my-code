@@ -3765,6 +3765,7 @@ def majorityElement(nums):
 # -1 表示我们无法跨越的障碍。
 # 返回在四个方向（上、下、左、右）上行走时，从起始方格到结束方格的不同路径的数目。
 # 每一个无障碍方格都要通过一次，但是一条路径中不能重复通过同一个方格。
+<<<<<<< Updated upstream
 #path = [[1,0,0,0],[0,0,0,0],[0,0,2,-1]]
 #print(path)
 
@@ -3798,3 +3799,33 @@ def quickSortDemo():
     right = len(arr) - 1
     partion(arr, left, right);
     print(arr)
+=======
+
+
+
+### LeeCode 12
+# TODO 待完成
+num = 31
+dic = {"4" : "IV", "40":"XL", "400":"CD", "9":"IX", "90":"XC", "900":"CM"}
+dic2 = {"1":"I"}
+strNum = str(num)
+
+res = ""
+i = len(strNum) - 1
+print(i)
+while i >= 0:
+    currIndex = len(strNum) - i - 1
+    curr = strNum[currIndex]
+    currNum = int(curr) * pow(10, i)
+    print(currNum)
+    if str(currNum) in dic.keys:
+
+        res += dic[str(currNum)]
+    else:
+
+        pass
+
+    i -= 1
+
+print(res)
+>>>>>>> Stashed changes
