@@ -1,0 +1,75 @@
+image: "node:10-alpine"
+
+stages:
+  - install
+  - build
+  - deployTest
+  - deployDev
+  - backupProduction
+  - deployProduction
+
+cache:
+  paths:
+    - node_modules
+
+install_job:
+  stage: install
+  script:
+    - npm install
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^release/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^hotfix/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^develop/'
+      when: on_success
+  allow_failure: false
+
+deploy_test_job:
+  stage: deployTest
+  script:
+    - export NODE_OPTIONS=--max-old-space-size=8192
+    - - echo "开始打包测试环境"
+    - npm run ci
+    - echo "开始执行build.sh"
+    - chmod a+x scripts/build.sh
+    - scripts/build.sh
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^release/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^hotfix/'
+      when: on_success
+  allow_failure: false
+
+deploy_dev_job:
+  stage: deployDev
+  script:
+    - export NODE_OPTIONS=--max-old-space-size=8192
+    - - echo "开始打包开发环境"
+    - npm run dev
+    - echo "开始执行build-dev.sh"
+    - chmod a+x scripts/build-dev.sh
+    - scripts/build-dev.sh
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^develop/'
+      when: on_success
+  allow_failure: false
+
+deploy_pro_backup_job:
+  stage: backupProduction
+  script:
+    - echo "开始备份线上环境"
+    - chmod a+x scripts/backup_for_production.sh
+    - scripts/backup_for_production.sh
+    - echo "线上环境备份完成"
+  only:
+    - tags
+
+deploy_pro_job:
+  stage: deployProduction
+  script:
+    - echo "开始打包线上环境"
+    - npm install
+    - npm run build
+    - echo "开始执行build-pro.sh"
+    - chmod a+x scripts/build-pro.sh
+    - scripts/build-pro.sh
+  only:
+    - tags
+
+after_script:
+  - echo "Stage：${CI_JOB_STAGE}, Job：${CI_JOB_NAME}, finished！"
