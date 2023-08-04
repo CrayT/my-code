@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 # coding:utf-8
-=======
-#coding=utf8
->>>>>>> a7ec5911efd28e89d399a129d7bb5367e6099ea0
 # import requests
 # import json
 # import numpy as np
@@ -703,11 +699,7 @@ while n > 0:
 #         result.append(list(item))
 #     return result
 # tmp = ss(A)
-<<<<<<< HEAD
-# print(tmp)
-=======
-# print('tmp',tmp)
->>>>>>> a7ec5911efd28e89d399a129d7bb5367e6099ea0
+
 
 # for i in range(len(tmp)):
 #     flag = True
@@ -1164,10 +1156,7 @@ print(s1) #s1的最后一个元素就是最后一个找到的最长回文子串
 #             next_list.append(point)
 #         else:
 #             point = next_list[point]
-<<<<<<< HEAD
-=======
-#             print(point)
->>>>>>> a7ec5911efd28e89d399a129d7bb5367e6099ea0
+
 #     print(next_list)
 #     return next_list
 
@@ -1184,13 +1173,8 @@ print(s1) #s1的最后一个元素就是最后一个找到的最长回文子串
 #     else:
 #         print("fail")
 
-<<<<<<< HEAD
 # s1 = "adcbabcdafabcd2"
 # s2 = 'abcda'
-=======
-# s1 = "adcbaacdabcfabcd2"
-# s2 = 'aacda'
->>>>>>> a7ec5911efd28e89d399a129d7bb5367e6099ea0
 # KMP_match(s2, s1, cal_next(s2))
 
 # s_rev = s[::-1] #翻转
@@ -1200,7 +1184,95 @@ print(s1) #s1的最后一个元素就是最后一个找到的最长回文子串
 # s_last = ss + s #拼接
 # print(s_last)
 
+# 纯KMP算法：
+# C++版：
+# class Solution {
+#     public:
+#         int strStr(string haystack, string needle) {
+#             int m = haystack.size();
+#             int n = needle.size();
+#             if(m < n){
+#                 return -1;
+#             }
+#             vector<int> next(n);
+#             int j = 0;
+#             for(int i = 1; i < n; i++){
+#                 while(j> 0 && needle[i] != needle[j]){
+#                     j = next[j - 1];
+#                 }
+#                 if(needle[i] == needle[j]){
+#                     j++;
+#                 }
+#                 next[i] = j;
+#             }
+#             for(int i = 0; i < m; i++){
+#                 // cout<<i<<endl;
+#                 int j = 0;
+#                 while(j < n && haystack[i] == needle[j]){
+#                     i++;
+#                     j++;
+#                 }
+#                 if(j == n){
+#                     return i - j;
+#                 }
+#                 if(j > 0){
+#                     // cout<<j<<","<<next[j-1]<<endl;
+#                     i -= next[j - 1] + 1;
+#                 }
+#             }
+#             return -1;
+#         }   
+#     };
 
+# js版：
+# function cal_next(st){
+#     let j = 0;
+#     const list = new Array(st.length).fill(0);
+#     for(let i = 1; i < st.length; i++){
+#         while( j > 0 && st[i] !== st[j]){
+#             j = list[j-1];
+#         }
+#         if(st[i] === st[j]){
+#             j += 1;
+#         }
+#         list[i] = j;
+#     }
+#     // console.log(list);
+#     return list;
+# }
+# /**
+#  * @param {string} haystack
+#  * @param {string} needle
+#  * @return {number}
+#  */
+# var strStr = function(haystack, needle) {
+#     if(haystack.length < needle.length){
+#         return -1;
+#     }
+#     var aa = cal_next(needle);
+#     let p = 0;
+#     for(let i = 0; i < haystack.length; i++){
+#         // console.log('i', i, p)
+#         if(haystack[i] === needle[p]){
+#             let j = i;
+#             while(j < haystack.length && haystack[j] === needle[p]){
+#                 j += 1;
+#                 p += 1;
+#             }
+#             // console.log('p', p)
+#             if(p === needle.length){
+#                 return i;
+#             }
+#             let jump = p - aa[p-1] - 1;
+#             // console.log('jump', jump)
+#             i += jump;
+#             p = 0;
+#         } else {
+#             p = 0;
+#         }
+#     }
+#     return -1;
+# };
 
 #寻找数组的索引最大的山峰，山峰：大于两边的元素。
 # import sys
